@@ -1,45 +1,37 @@
-// MainActivity.kt
-
+// MainActivity.kt (Corregido para uso local)
 package com.example.nutritrack
 
-import android.content.Intent // Importar Intent para la navegación
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import com.example.nutritrack.databinding.ActivityMainBinding
-import com.example.nutritrack.network.LoginRequest
-import com.example.nutritrack.network.RetrofitClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.nutritrack.storage.UserPrefs
 
 class MainActivity : AppCompatActivity() {
 
-    // Variable para manejar las vistas de forma segura (View Binding)
     private lateinit var binding: ActivityMainBinding
+    private lateinit var userPrefs: UserPrefs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Inicializar View Binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 2. Asignar listener al botón de Login
+        userPrefs = UserPrefs(this)
+
+        // 1. Asignar listener al botón de Login
         binding.btnLogin.setOnClickListener {
             performLogin()
         }
 
-        // 3. Asignar listener al enlace de Registro (Navegación Corregida)
+        // 2. Asignar listener al enlace de Registro
         binding.tvRegisterLink.setOnClickListener {
-            // --- CÓDIGO CORREGIDO PARA INICIAR RegisterActivity ---
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
-            // ----------------------------------------------------
         }
     }
 
-    // Función principal para la lógica de inicio de sesión
     private fun performLogin() {
         // 1. Obtener datos de la UI
         val email = binding.etEmail.text.toString().trim()
@@ -51,49 +43,27 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // Limpiar mensaje anterior
-        binding.tvMessage.text = "Iniciando sesión..."
+        // 3. Obtener credenciales almacenadas localmente
+        val storedEmail = userPrefs.getStoredEmail()
+        val storedPassword = userPrefs.getStoredPassword()
+        val storedName = userPrefs.getStoredName()
 
-        // 3. Ejecutar la petición de red en una coroutine (asíncrono)
-        // Usamos Dispatchers.IO para operaciones de red
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                // Crear el objeto de la petición
-                val loginRequest = LoginRequest(email, password)
+        // 4. Simulación de validación (LOCAL)
+        if (email == storedEmail && password == storedPassword) {
+            // ÉXITO en la autenticación
+            binding.tvMessage.text = "¡Sesión iniciada! Bienvenido, $storedName"
 
-                // Llamar al servicio de Retrofit
-                val response = RetrofitClient.authService.login(loginRequest)
+            // Redirigir al Dashboard (DashboardActivity)
+            val intent = Intent(this, DashboardActivity::class.java)
+            intent.putExtra("USER_NAME", storedName)
+            startActivity(intent)
+            finish()
 
-                // Volver al hilo principal para actualizar la UI (Dispatchers.Main)
-                with(Dispatchers.Main) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val authResponse = response.body()!!
-                        // ÉXITO en la autenticación
-                        binding.tvMessage.text = "¡Sesión iniciada con éxito! Usuario: ${authResponse.user.name}"
-
-                        // Aquí se guardaría el token y se navegaría al Dashboard (DashboardActivity)
-                        Toast.makeText(this@MainActivity, "Token recibido: ${authResponse.token.take(10)}...", Toast.LENGTH_LONG).show()
-
-                        // --- Redirigir al Dashboard (Una vez que crees esa Activity) ---
-                        // val intent = Intent(this@MainActivity, DashboardActivity::class.java)
-                        // startActivity(intent)
-                        // finish()
-                        // -----------------------------------------------------------------
-
-                    } else {
-                        // FALLO en la autenticación (ej: 401 Unauthorized)
-                        val errorBody = response.errorBody()?.string() ?: "Credenciales inválidas"
-                        binding.tvMessage.text = "Error de Login: ${response.code()}"
-
-                    }
-                }
-            } catch (e: Exception) {
-                // FALLO en la conexión (ej: el servidor no está corriendo o hay un error de red)
-                with(Dispatchers.Main) {
-                    binding.tvMessage.text = "Error de conexión: Verifica que el servidor esté activo en 10.0.2.2:3000"
-                    e.printStackTrace()
-                }
-            }
+        } else if (!userPrefs.isUserRegistered()) {
+            binding.tvMessage.text = "Error: No hay cuentas registradas."
+        } else {
+            // FALLO en la autenticación
+            binding.tvMessage.text = "Credenciales inválidas. Intenta de nuevo."
         }
     }
 }
