@@ -1,4 +1,3 @@
-// DashboardActivity.kt (Corregido para uso local y RecordPrefs)
 package com.example.nutritrack
 
 import android.content.Intent
@@ -24,31 +23,39 @@ class DashboardActivity : AppCompatActivity() {
         recordPrefs = RecordPrefs(this)
         userPrefs = UserPrefs(this)
 
-        // 1. Mostrar el saludo
+
         val userName = intent.getStringExtra("USER_NAME") ?: userPrefs.getStoredName() ?: "Usuario"
         binding.tvWelcome.text = "¡Hola, $userName!"
 
-        // 2. Asignar listeners a los botones principales
+
+
+
         binding.btnRegisterFood.setOnClickListener {
             val intent = Intent(this, FoodEntryActivity::class.java)
             startActivity(intent)
         }
 
-        // El listener para el botón de actividad debe ir aquí (lo implementaremos en el siguiente módulo)
+
         binding.btnRegisterActivity.setOnClickListener {
             val intent = Intent(this, ActivityEntryActivity::class.java)
             startActivity(intent)
         }
 
+        binding.btnViewReports.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
+
+
         binding.btnLogout.setOnClickListener {
             performLogout()
         }
 
-        // 3. Mostrar el resumen (se llama también en onResume)
+
         updateBalanceView()
     }
 
-    // Esta función se llama cada vez que la Activity vuelve a primer plano (ej: desde FoodEntryActivity)
+
     override fun onResume() {
         super.onResume()
         updateBalanceView()
@@ -58,17 +65,30 @@ class DashboardActivity : AppCompatActivity() {
         val lastFood = recordPrefs.getLastFoodEntry()
         val lastActivity = recordPrefs.getLastActivityEntry()
 
-        // Usamos una simulación de balance con los últimos registros guardados
+        val balanceStatus = getSimulatedBalanceStatus()
+
         binding.tvBalanceValue.text =
-            "Última Comida: $lastFood\n" +
+            "Balance Diario: $balanceStatus\n" +
+                    "Última Comida: $lastFood\n" +
                     "Última Actividad: $lastActivity"
     }
 
+    private fun getSimulatedBalanceStatus(): String {
+        val randomStatus = (0..2).random()
+        return when (randomStatus) {
+            0 -> "Superávit (+)"
+            1 -> "Déficit (-)"
+            else -> "Neutro (≈)"
+        }
+    }
+
+
     private fun performLogout() {
-        // Borra la sesión local y redirige al login (MainActivity)
+        // Borra la sesión local y redirige al login
         userPrefs.clearUser()
         Toast.makeText(this, "Sesión cerrada.", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, MainActivity::class.java)
+
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

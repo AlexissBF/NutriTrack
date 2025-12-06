@@ -1,4 +1,3 @@
-// MainActivity.kt (Corregido para uso local)
 package com.example.nutritrack
 
 import android.content.Intent

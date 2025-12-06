@@ -1,5 +1,3 @@
-// ActivityEntryActivity.kt
-
 package com.example.nutritrack
 
 import androidx.appcompat.app.AppCompatActivity

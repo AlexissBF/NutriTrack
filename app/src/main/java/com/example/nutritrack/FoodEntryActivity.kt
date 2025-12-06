@@ -34,13 +34,13 @@ class FoodEntryActivity : AppCompatActivity() {
         val unit = binding.etUnit.text.toString().trim()
         val caloriesStr = binding.etCalories.text.toString().trim()
 
-        // 2. Validación de campos obligatorios
+
         if (foodName.isEmpty() || quantityStr.isEmpty() || unit.isEmpty() || caloriesStr.isEmpty()) {
             Toast.makeText(this, "Todos los campos son obligatorios.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // 3. Conversión y validación numérica
+
         val calories = caloriesStr.toIntOrNull()
 
         if (calories == null || calories < 0) {
@@ -48,13 +48,13 @@ class FoodEntryActivity : AppCompatActivity() {
             return
         }
 
-        // 4. SIMULACIÓN DE GUARDADO (Guarda localmente el último registro)
+
         recordPrefs.saveLastFoodEntry(foodName, calories)
 
-        // 5. ÉXITO: Mostrar mensaje y limpiar
+
         Toast.makeText(this, "¡Comida registrada con éxito!", Toast.LENGTH_SHORT).show()
 
-        // Limpiar campos y cerrar la Activity
+
         binding.etFoodName.text?.clear()
         binding.etQuantity.text?.clear()
         binding.etUnit.text?.clear()
@@ -63,8 +63,8 @@ class FoodEntryActivity : AppCompatActivity() {
         finish()
     }
 
-    // Función de utilidad para mostrar mensajes en la UI
+
     private fun displayMessage(message: String, colorId: Int) {
-        // Ya no se usa, pero se puede mantener vacío o eliminar si el compilador lo permite
+
     }
 }
