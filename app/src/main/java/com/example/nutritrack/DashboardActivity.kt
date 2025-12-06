@@ -36,7 +36,8 @@ class DashboardActivity : AppCompatActivity() {
 
         // El listener para el botón de actividad debe ir aquí (lo implementaremos en el siguiente módulo)
         binding.btnRegisterActivity.setOnClickListener {
-            Toast.makeText(this, "Módulo de Actividad Próximamente", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ActivityEntryActivity::class.java)
+            startActivity(intent)
         }
 
         binding.btnLogout.setOnClickListener {

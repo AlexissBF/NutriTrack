@@ -16,6 +16,9 @@
         android:theme="@style/Theme.NutriTrack"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ActivityEntryActivity"
+            android:exported="false" />
+        <activity
             android:name=".DashboardActivity"
             android:exported="false" />
         <activity
