@@ -45,7 +45,6 @@ class DashboardActivity : AppCompatActivity() {
         binding.btnLogout.setOnClickListener {
             userPrefs.clearSession()
             Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
-            // Limpiar el historial para que el usuario no pueda volver con el botón de atrás
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
@@ -61,34 +60,42 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun updateView() {
-        val activeUser = userPrefs.getActiveUser()
-        if (activeUser == null) {
-            // Si por alguna razón no hay usuario, no hay nada que mostrar
-            return
-        }
+        val activeUser = userPrefs.getActiveUser() ?: return
 
+        // --- Resumen de Comidas ---
         val foodEntries = recordPrefs.getFoodEntriesForUser(activeUser.email)
         val foodListText = StringBuilder()
-        var totalCalories = 0
+        var totalCaloriesConsumed = 0
 
         if (foodEntries.isEmpty()) {
-            foodListText.append("Aún no has registrado ninguna comida hoy.")
+            foodListText.append("Aún no has registrado ninguna comida.")
         } else {
-            foodListText.append("Comidas de hoy:\n")
             foodEntries.forEach { entry ->
-                foodListText.append("  • ${entry.foodName} (${entry.quantity}): ${entry.calories} kcal\n")
-                totalCalories += entry.calories
+                foodListText.append("• ${entry.foodName}: ${entry.calories} kcal\n")
+                totalCaloriesConsumed += entry.calories
+            }
+        }
+        binding.tvFoodSummary.text = foodListText.toString()
+        binding.tvTotalCalories.text = "Total Consumido: $totalCaloriesConsumed kcal"
+
+        // --- Resumen de Actividad Física ---
+        val activityEntries = recordPrefs.getActivityEntriesForUser(activeUser.email)
+        val activityListText = StringBuilder()
+        var totalCaloriesBurned = 0
+
+        if (activityEntries.isEmpty()) {
+            activityListText.append("Aún no has registrado actividad física.")
+        } else {
+            activityEntries.forEach { entry ->
+                activityListText.append("• ${entry.activityName} (${entry.duration}): ${entry.caloriesBurned} kcal\n")
+                totalCaloriesBurned += entry.caloriesBurned
             }
         }
 
-        // Asumo que tienes un TextView con id 'tv_food_summary' en tu layout
-        binding.tvFoodSummary.text = foodListText.toString()
-
-        // Asumo que tienes un TextView con id 'tv_total_calories' en tu layout
-        binding.tvTotalCalories.text = "Total: $totalCalories kcal"
-
-        // Mantengo la lógica de la actividad física si aún la necesitas
-        // val lastActivity = recordPrefs.getLastActivityEntry(activeUser.email)
-        // binding.tvActivitySummary.text = "Actividad: $lastActivity"
+        // Asumo que tienes un TextView con id 'tv_activity_summary' en tu layout
+        binding.tvActivitySummary.text = activityListText.toString()
+        
+        // Asumo que tienes un TextView con id 'tv_total_calories_burned' en tu layout
+        binding.tvTotalCaloriesBurned.text = "Total Quemado: $totalCaloriesBurned kcal"
     }
 }

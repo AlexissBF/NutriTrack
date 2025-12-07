@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="16dp">
 
         <ImageButton
             android:id="@+id/btn_open_drawer"
@@ -28,40 +28,64 @@
             android:layout_height="wrap_content"
             android:text="¡Hola!"
             android:textSize="24sp"
+            android:layout_marginBottom="16dp"
             android:textStyle="bold" />
 
-        <!-- Contenedor para el resumen de comidas -->
+        <!-- Resumen de Comidas -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp"
-            android:background="#F0F0F0"
-            android:layout_marginTop="16dp">
+            android:background="#F0F0F0">
 
             <TextView
                 android:id="@+id/tv_food_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="8" />
+                android:maxLines="4" />
 
             <TextView
                 android:id="@+id/tv_total_calories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
-
+                android:textStyle="bold" />
         </LinearLayout>
+
+        <!-- Resumen de Actividad Física -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_marginTop="16dp"
+            android:background="#E8F5E9">
+
+            <TextView
+                android:id="@+id/tv_activity_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="4" />
+
+            <TextView
+                android:id="@+id/tv_total_calories_burned"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/btn_register_food"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registrar Alimento"
-            android:layout_marginTop="16dp"/>
+            android:text="Registrar Alimento"/>
 
         <Button
             android:id="@+id/btn_register_activity"
