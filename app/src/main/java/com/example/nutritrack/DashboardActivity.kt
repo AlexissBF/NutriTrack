@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import com.example.nutritrack.databinding.ActivityDashboardBinding
 import com.example.nutritrack.storage.RecordPrefs
 import com.example.nutritrack.storage.UserPrefs
@@ -16,80 +17,48 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         recordPrefs = RecordPrefs(this)
         userPrefs = UserPrefs(this)
 
+        val activeUser = userPrefs.getActiveUser()
+        binding.tvWelcome.text = "¡Hola, ${activeUser?.name ?: "Usuario"}!"
 
-        val userName = intent.getStringExtra("USER_NAME") ?: userPrefs.getStoredName() ?: "Usuario"
-        binding.tvWelcome.text = "¡Hola, $userName!"
-
-
-
-
-        binding.btnRegisterFood.setOnClickListener {
-            val intent = Intent(this, FoodEntryActivity::class.java)
-            startActivity(intent)
+        binding.btnOpenDrawer.setOnClickListener {
+            binding.drawerLayout.openDrawer(GravityCompat.START)
         }
 
-
-        binding.btnRegisterActivity.setOnClickListener {
-            val intent = Intent(this, ActivityEntryActivity::class.java)
-            startActivity(intent)
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_about -> startActivity(Intent(this, AboutActivity::class.java))
+            }
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            true
         }
 
-        binding.btnViewReports.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
-        }
-
+        binding.btnRegisterFood.setOnClickListener { startActivity(Intent(this, FoodEntryActivity::class.java)) }
+        binding.btnRegisterActivity.setOnClickListener { startActivity(Intent(this, ActivityEntryActivity::class.java)) }
+        binding.btnViewReports.setOnClickListener { startActivity(Intent(this, ProfileActivity::class.java)) }
 
         binding.btnLogout.setOnClickListener {
-            performLogout()
+            userPrefs.clearSession()
+            Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
 
-
-        updateBalanceView()
+        updateView()
     }
-
 
     override fun onResume() {
         super.onResume()
-        updateBalanceView()
+        updateView()
     }
 
-    private fun updateBalanceView() {
-        val lastFood = recordPrefs.getLastFoodEntry()
-        val lastActivity = recordPrefs.getLastActivityEntry()
-
-        val balanceStatus = getSimulatedBalanceStatus()
-
-        binding.tvBalanceValue.text =
-            "Balance Diario: $balanceStatus\n" +
-                    "Última Comida: $lastFood\n" +
-                    "Última Actividad: $lastActivity"
-    }
-
-    private fun getSimulatedBalanceStatus(): String {
-        val randomStatus = (0..2).random()
-        return when (randomStatus) {
-            0 -> "Superávit (+)"
-            1 -> "Déficit (-)"
-            else -> "Neutro (≈)"
-        }
-    }
-
-
-    private fun performLogout() {
-        // Borra la sesión local y redirige al login
-        userPrefs.clearUser()
-        Toast.makeText(this, "Sesión cerrada.", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, MainActivity::class.java)
-
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+    private fun updateView() {
+        val activeEmail = userPrefs.getActiveUser()?.email ?: ""
+        binding.tvBalanceValue.text = "Comida: ${recordPrefs.getLastFoodEntry(activeEmail)}\nActividad: ${recordPrefs.getLastActivityEntry(activeEmail)}"
     }
 }

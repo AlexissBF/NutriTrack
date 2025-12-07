@@ -14,17 +14,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 1. Configuración de ViewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 2. Inicialización de almacenamiento local
         userPrefs = UserPrefs(this)
 
-        // 1. Asignar listener al botón de Login
+        // 3. Listener para el botón de Login
         binding.btnLogin.setOnClickListener {
             performLogin()
         }
 
-        // 2. Asignar listener al enlace de Registro
+        // 4. Listener para ir a la pantalla de Registro
         binding.tvRegisterLink.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
@@ -32,37 +34,43 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performLogin() {
-        // 1. Obtener datos de la UI
+        // Obtener datos ingresados
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
 
-        // 2. Validación básica de campos
+        // Validación de campos vacíos
         if (email.isEmpty() || password.isEmpty()) {
-            binding.tvMessage.text = "Por favor, ingresa correo y contraseña."
+            binding.tvMessage.text = "Por favor, ingresa tus credenciales."
             return
         }
 
-        // 3. Obtener credenciales almacenadas localmente
-        val storedEmail = userPrefs.getStoredEmail()
-        val storedPassword = userPrefs.getStoredPassword()
-        val storedName = userPrefs.getStoredName()
+        // RF01: Intento de login consultando la lista de usuarios en UserPrefs
+        val loggedUser = userPrefs.login(email, password)
 
-        // 4. Simulación de validación (LOCAL)
-        if (email == storedEmail && password == storedPassword) {
-            // ÉXITO en la autenticación
-            binding.tvMessage.text = "¡Sesión iniciada! Bienvenido, $storedName"
+        if (loggedUser != null) {
+            // Guardar el usuario en la sesión activa
+            userPrefs.saveSession(loggedUser)
 
-            // Redirigir al Dashboard (DashboardActivity)
-            val intent = Intent(this, DashboardActivity::class.java)
-            intent.putExtra("USER_NAME", storedName)
-            startActivity(intent)
-            finish()
 
-        } else if (!userPrefs.isUserRegistered()) {
-            binding.tvMessage.text = "Error: No hay cuentas registradas."
+            // Determinamos si es Admin (Alexis1) o contiene la palabra 'admin'
+            val isAdmin = email.contains("admin", ignoreCase = true) || email == "alexis1@gmail.com"
+
+            if (isAdmin) {
+                // RF06: Navegar al Panel Administrativo
+                val intent = Intent(this, AdminActivity::class.java)
+                startActivity(intent)
+            } else {
+                // Navegar al Dashboard General del Usuario
+                val intent = Intent(this, DashboardActivity::class.java)
+                intent.putExtra("USER_NAME", loggedUser.name)
+                startActivity(intent)
+            }
+
+            finish() // Cerramos el Login para seguridad
+
         } else {
-            // FALLO en la autenticación
-            binding.tvMessage.text = "Credenciales inválidas. Intenta de nuevo."
+            // Error si no se encuentra el usuario en la lista local
+            binding.tvMessage.text = "Correo o contraseña incorrectos."
         }
     }
 }

@@ -16,6 +16,12 @@
         android:theme="@style/Theme.NutriTrack"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
