@@ -3,6 +3,7 @@ package com.example.nutritrack
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.nutritrack.data.User // Asumo la ruta
 import com.example.nutritrack.databinding.ActivityMainBinding
 import com.example.nutritrack.storage.UserPrefs
 
@@ -14,19 +15,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Configuración de ViewBinding
+        userPrefs = UserPrefs(this)
+
+        // Comprobar si ya hay una sesión activa
+        val activeUser = userPrefs.getActiveUser()
+        if (activeUser != null) {
+            navigateToDashboard(activeUser)
+            return // Evita que el resto del onCreate se ejecute
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 2. Inicialización de almacenamiento local
-        userPrefs = UserPrefs(this)
-
-        // 3. Listener para el botón de Login
         binding.btnLogin.setOnClickListener {
             performLogin()
         }
 
-        // 4. Listener para ir a la pantalla de Registro
         binding.tvRegisterLink.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
@@ -34,43 +38,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performLogin() {
-        // Obtener datos ingresados
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
 
-        // Validación de campos vacíos
         if (email.isEmpty() || password.isEmpty()) {
             binding.tvMessage.text = "Por favor, ingresa tus credenciales."
             return
         }
 
-        // RF01: Intento de login consultando la lista de usuarios en UserPrefs
         val loggedUser = userPrefs.login(email, password)
 
         if (loggedUser != null) {
-            // Guardar el usuario en la sesión activa
             userPrefs.saveSession(loggedUser)
-
-
-            // Determinamos si es Admin (Alexis1) o contiene la palabra 'admin'
-            val isAdmin = email.contains("admin", ignoreCase = true) || email == "alexis1@gmail.com"
-
-            if (isAdmin) {
-                // RF06: Navegar al Panel Administrativo
-                val intent = Intent(this, AdminActivity::class.java)
-                startActivity(intent)
-            } else {
-                // Navegar al Dashboard General del Usuario
-                val intent = Intent(this, DashboardActivity::class.java)
-                intent.putExtra("USER_NAME", loggedUser.name)
-                startActivity(intent)
-            }
-
-            finish() // Cerramos el Login para seguridad
-
+            navigateToDashboard(loggedUser)
         } else {
-            // Error si no se encuentra el usuario en la lista local
             binding.tvMessage.text = "Correo o contraseña incorrectos."
         }
+    }
+
+    private fun navigateToDashboard(user: User) {
+        val isAdmin = user.email.contains("admin", ignoreCase = true) || user.email == "alexis1@gmail.com"
+
+        if (isAdmin) {
+            val intent = Intent(this, AdminActivity::class.java)
+            startActivity(intent)
+        } else {
+            val intent = Intent(this, DashboardActivity::class.java)
+            intent.putExtra("USER_NAME", user.name)
+            startActivity(intent)
+        }
+        finish() // Cierra MainActivity para que el usuario no pueda volver con el botón de atrás
     }
 }

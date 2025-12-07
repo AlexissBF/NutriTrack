@@ -1,43 +1,54 @@
 package com.example.nutritrack
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.nutritrack.data.User
-import com.example.nutritrack.databinding.ActivityRegisterBinding
+import com.example.nutritrack.data.User // Asumo que esta es la ruta correcta
 import com.example.nutritrack.storage.UserPrefs
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityRegisterBinding
     private lateinit var userPrefs: UserPrefs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_register)
+
         userPrefs = UserPrefs(this)
 
-        binding.btnRegister.setOnClickListener { performRegistration() }
-    }
+        val etEmail = findViewById<EditText>(R.id.etEmail)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
+        // Añadimos un campo para el nombre, ya que el objeto User lo requiere
+        val etName = findViewById<EditText>(R.id.etName) // Necesitamos añadir este EditText al layout
+        val btnRegister = findViewById<Button>(R.id.btnRegister)
 
-    private fun performRegistration() {
-        val name = binding.etName.text.toString().trim()
-        val email = binding.etEmail.text.toString().trim()
-        val password = binding.etPassword.text.toString().trim()
+        btnRegister.setOnClickListener {
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+            val name = etName.text.toString().trim()
 
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            binding.tvRegisterMessage.text = "Todos los campos son obligatorios."
-            return
-        }
+            if (email.isNotBlank() && password.isNotBlank() && name.isNotBlank()) {
+                // Creamos un nuevo usuario con rol "user" por defecto
+                val newUser = User(email, name, password, "user")
 
-        val newUser = User(email, name, password)
+                // Usamos el método de UserPrefs para registrarlo
+                val success = userPrefs.registerNewUser(newUser)
 
-        if (userPrefs.registerNewUser(newUser)) {
-            Toast.makeText(this, "Cuenta para $name creada.", Toast.LENGTH_SHORT).show()
-            finish()
-        } else {
-            binding.tvRegisterMessage.text = "El correo ya existe."
+                if (success) {
+                    Toast.makeText(this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show()
+                    // Redirigir a la pantalla de inicio de sesión
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this, "El correo electrónico ya está en uso", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
