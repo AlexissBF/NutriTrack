@@ -45,7 +45,10 @@ class DashboardActivity : AppCompatActivity() {
         binding.btnLogout.setOnClickListener {
             userPrefs.clearSession()
             Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, MainActivity::class.java))
+            // Limpiar el historial para que el usuario no pueda volver con el botón de atrás
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
             finish()
         }
 
@@ -58,7 +61,34 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun updateView() {
-        val activeEmail = userPrefs.getActiveUser()?.email ?: ""
-        binding.tvBalanceValue.text = "Comida: ${recordPrefs.getLastFoodEntry(activeEmail)}\nActividad: ${recordPrefs.getLastActivityEntry(activeEmail)}"
+        val activeUser = userPrefs.getActiveUser()
+        if (activeUser == null) {
+            // Si por alguna razón no hay usuario, no hay nada que mostrar
+            return
+        }
+
+        val foodEntries = recordPrefs.getFoodEntriesForUser(activeUser.email)
+        val foodListText = StringBuilder()
+        var totalCalories = 0
+
+        if (foodEntries.isEmpty()) {
+            foodListText.append("Aún no has registrado ninguna comida hoy.")
+        } else {
+            foodListText.append("Comidas de hoy:\n")
+            foodEntries.forEach { entry ->
+                foodListText.append("  • ${entry.foodName} (${entry.quantity}): ${entry.calories} kcal\n")
+                totalCalories += entry.calories
+            }
+        }
+
+        // Asumo que tienes un TextView con id 'tv_food_summary' en tu layout
+        binding.tvFoodSummary.text = foodListText.toString()
+
+        // Asumo que tienes un TextView con id 'tv_total_calories' en tu layout
+        binding.tvTotalCalories.text = "Total: $totalCalories kcal"
+
+        // Mantengo la lógica de la actividad física si aún la necesitas
+        // val lastActivity = recordPrefs.getLastActivityEntry(activeUser.email)
+        // binding.tvActivitySummary.text = "Actividad: $lastActivity"
     }
 }

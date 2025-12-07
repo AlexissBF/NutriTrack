@@ -30,13 +30,31 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_balance_value"
+        <!-- Contenedor para el resumen de comidas -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="12dp"
             android:background="#F0F0F0"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tv_food_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="8" />
+
+            <TextView
+                android:id="@+id/tv_total_calories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_register_food"
