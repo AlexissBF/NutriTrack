@@ -2,15 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     android:padding="24dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Panel Administrativo"
         android:textSize="26sp"
         android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_app_gradient"
+        android:gravity="center"
+        android:padding="16dp"
         android:layout_marginBottom="16dp" />
 
     <ScrollView
@@ -57,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cerrar Sesión Admin"
-        android:backgroundTint="@android:color/darker_gray"
-        android:textColor="@android:color/black"/>
+        android:backgroundTint="@color/action_blue"
+        android:textColor="@color/white"/>
 
 </LinearLayout>

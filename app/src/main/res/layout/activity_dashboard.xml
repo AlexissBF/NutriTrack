@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="24dp"
+        android:background="@color/white">
 
         <ImageButton
             android:id="@+id/btn_open_drawer"
@@ -24,85 +25,56 @@
 
         <TextView
             android:id="@+id/tv_welcome"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="¡Hola!"
             android:textSize="24sp"
-            android:layout_marginBottom="16dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_app_gradient"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:layout_marginTop="8dp" />
 
-        <!-- Resumen de Comidas -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_balance_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:background="#F0F0F0">
-
-            <TextView
-                android:id="@+id/tv_food_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="4" />
-
-            <TextView
-                android:id="@+id/tv_total_calories"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="textEnd"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Resumen de Actividad Física -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginTop="16dp"
-            android:background="#E8F5E9">
-
-            <TextView
-                android:id="@+id/tv_activity_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="4" />
-
-            <TextView
-                android:id="@+id/tv_total_calories_burned"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="textEnd"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:padding="16dp"
+            android:background="@drawable/bg_card_rounded"
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/btn_register_food"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registrar Alimento"/>
+            android:backgroundTint="@color/action_blue"
+            android:textColor="@color/white"
+            android:text="Registrar Alimento"
+            android:layout_marginTop="16dp"/>
 
         <Button
             android:id="@+id/btn_register_activity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/action_blue"
+            android:textColor="@color/white"
             android:text="Registrar Actividad" />
 
         <Button
             android:id="@+id/btn_view_reports"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/action_blue"
+            android:textColor="@color/white"
             android:text="Mi Perfil" />
 
         <Button
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/action_blue"
+            android:textColor="@color/white"
             android:text="Cerrar Sesión" />
     </LinearLayout>
 

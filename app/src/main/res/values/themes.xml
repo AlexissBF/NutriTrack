@@ -1,9 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.NutriTrack" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Colores principales -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="android:statusBarColor">@color/header_blue</item>
+        <item name="android:navigationBarColor">@color/background_neutral</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+
+        <!-- Texto -->
+        <item name="android:textColor">@color/text_contrast</item>
+
+        <!-- Componentes Material -->
+        <item name="materialButtonStyle">@style/Widget.NutriTrack.Button</item>
     </style>
 
     <style name="Theme.NutriTrack" parent="Base.Theme.NutriTrack" />
+
+    <!-- Estilo general de botones -->
+    <style name="Widget.NutriTrack.Button" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/action_blue</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:insetTop">8dp</item>
+        <item name="android:insetBottom">8dp</item>
+    </style>
 </resources>

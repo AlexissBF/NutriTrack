@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Paleta principal NutriTrack -->
+    <color name="primary_orange">#F18C21</color> <!-- Energía y motivación -->
+    <color name="action_blue">#28ABDB</color>   <!-- Botones y acciones -->
+    <color name="vital_yellow_green">#D6DA2C</color> <!-- Vitalidad -->
+    <color name="focus_yellow">#F8C22B</color>  <!-- Atención y enfoque -->
+    <color name="background_neutral">#D5D5D5</color> <!-- Fondo neutro -->
+    <color name="header_blue">#0B6FB6</color>   <!-- Encabezados profesionales -->
+    <color name="secondary_warm">#F49D27</color> <!-- Tono cálido secundario -->
+    <color name="text_contrast">#545454</color> <!-- Texto principal -->
+
+    <!-- Derivados para tema Material -->
+    <color name="colorPrimary">@color/primary_orange</color>
+    <color name="colorPrimaryVariant">@color/secondary_warm</color>
+    <color name="colorOnPrimary">#FFFFFFFF</color>
+
+    <color name="colorSecondary">@color/action_blue</color>
+    <color name="colorOnSecondary">#FFFFFFFF</color>
+
+    <color name="colorBackground">@color/white</color>
+    <color name="colorOnBackground">@color/text_contrast</color>
+
+    <color name="colorSurface">#FFFFFFFF</color>
+    <color name="colorOnSurface">@color/text_contrast</color>
+
+    <!-- Básicos -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
